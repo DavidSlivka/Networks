@@ -121,3 +121,40 @@ class TestIPv6(unittest.TestCase):
         self.assertEqual(self.IPv6_3.has_cidr_notation(), False)
         self.assertEqual(self.IPv6_4.has_cidr_notation(), True)
         self.assertEqual(self.IPv6_5.has_cidr_notation(), True)
+
+
+class TestMask(unittest.TestCase):
+    def setUp(self):
+        self.mask_1 = IP.Mask('255.255.224.0')
+        self.mask_2 = IP.Mask('255.255.252.0')
+        self.mask_3 = IP.Mask('255.255.255.1')
+        self.mask_4 = IP.Mask('255.0.255.0')
+        self.mask_5 = IP.Mask('255.300.255.0')
+
+    def test_check_format(self):
+        self.assertEqual(self.mask_1.check_format(), True)
+        self.assertEqual(self.mask_2.check_format(), True)
+        self.assertEqual(self.mask_3.check_format(), True)
+        self.assertEqual(self.mask_4.check_format(), True)
+        self.assertEqual(self.mask_5.check_format(), True)
+
+    def test_check_values(self):
+        self.assertEqual(self.mask_1.check_values(), True)
+        self.assertEqual(self.mask_2.check_values(), True)
+        self.assertEqual(self.mask_3.check_values(), True)
+        self.assertEqual(self.mask_4.check_values(), True)
+        self.assertEqual(self.mask_5.check_values(), False)
+
+    def test_get_binary_format(self):
+        self.assertEqual(self.mask_1.get_binary_format(), '11111111.11111111.11100000.00000000')
+        self.assertEqual(self.mask_2.get_binary_format(), '11111111.11111111.11111100.00000000')
+        self.assertEqual(self.mask_3.get_binary_format(), '11111111.11111111.11111111.00000001')
+        self.assertEqual(self.mask_4.get_binary_format(), '11111111.00000000.11111111.00000000')
+        self.assertEqual(self.mask_5.get_binary_format(), '')
+
+    def test_check_valid_mask(self):
+        self.assertEqual(self.mask_1.check_valid_mask(), True)
+        self.assertEqual(self.mask_2.check_valid_mask(), True)
+        self.assertEqual(self.mask_3.check_valid_mask(), False)
+        self.assertEqual(self.mask_4.check_valid_mask(), False)
+        self.assertEqual(self.mask_5.check_valid_mask(), False)

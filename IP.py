@@ -170,3 +170,52 @@ class IPv6(IPAddress):
                 # exit(1)
                 return False
         return False
+
+
+class Mask(IPAddress):
+    def __init__(self, ip):
+        super().__init__(ip)
+        self.values = []
+        self.binary_repr = ''
+        self.check_valid_mask()
+
+    def check_valid_mask(self):
+        self.binary_repr = self.get_binary_format()
+        joined = ''.join(self.binary_repr.split('.'))
+        for i in range(len(joined)):
+            if joined[i] == '0':
+                if all(j == '0' for j in joined[i:]):
+                    return True
+                else:
+                    print("Invalid Mask IP address")
+                    # exit(1)
+                    return False
+        return False
+
+    def check_format(self):
+        if isinstance(self.ip, str):
+            self.values = [i for i in self.ip.split('.') if i != '']
+            if len(self.values) == 4:
+                if all(len(val) < 4 for val in self.values):
+                    return True
+
+        return False
+
+    def check_values(self):
+        if self.check_format():
+            return all(int(val) < 256 for val in self.values)
+        return ''
+
+    def get_binary_format(self):
+        if self.check_values():
+            binary_repr = ''
+            for val in self.values:
+                binary_repr += f'{int(val):08b}.'
+
+            binary_repr = binary_repr[0:-1]
+
+            return binary_repr
+        else:
+            print("Invalid Mask address")
+            # exit(1)
+            return ''
